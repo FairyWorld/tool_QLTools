@@ -9,9 +9,10 @@ package jwt
 import (
 	"QLPanelTools/server/sqlite"
 	"errors"
-	"github.com/golang-jwt/jwt"
-	"go.uber.org/zap"
 	"time"
+
+	"github.com/golang-jwt/jwt/v5"
+	"go.uber.org/zap"
 )
 
 // TokenExpireDuration Token过期时间(7天)
@@ -20,14 +21,14 @@ const TokenExpireDuration = time.Hour * 24 * 7
 // 加盐
 //var mySecret = []byte("44tEeUAVxTKxcU6We9dc")
 
-// MyClaims 自定义声明结构体并内嵌jwt.StandardClaims
-// jwt包自带的jwt.StandardClaims只包含了官方字段
-// 我们这里需要额外记录一个username字段，所以要自定义结构体
+// MyClaims 自定义声明结构体并内嵌jwt.RegisteredClaims
+// jwt包自带的jwt.RegisteredClaims只包含了官方字段
+// 我们这里需要额外记录一个email字段，所以要自定义结构体
 // 如果想要保存更多信息，都可以添加到这个结构体中
 type MyClaims struct {
 	UserID int64  `json:"user_id"`
 	Email  string `json:"email"`
-	jwt.StandardClaims
+	jwt.RegisteredClaims
 }
 
 // GenToken 生成JWT
@@ -43,9 +44,9 @@ func GenToken(userID int64, email string) (string, error) {
 	c := MyClaims{
 		UserID: userID,
 		Email:  email,
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(TokenExpireDuration).Unix(), // 过期时间
-			Issuer:    "QLTools",                                  // 签发人
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(TokenExpireDuration)), // 过期时间
+			Issuer:    "QLTools",                                               // 签发人
 		},
 	}
 

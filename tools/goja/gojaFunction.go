@@ -9,13 +9,14 @@ package goja
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/beego/beego/v2/adapter/httplib"
-	"go.uber.org/zap"
 	"io/ioutil"
 	"net/http"
 	"regexp"
 	"strings"
 	"time"
+
+	"github.com/beego/beego/v2/client/httplib"
+	"go.uber.org/zap"
 )
 
 // request HTTP请求方法
